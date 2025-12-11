@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmailAdminBroadcastNotificationSender.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library-Management-System</a> &gt; <a href="index.source.html" class="el_package">Service.Email</a> &gt; <span class="el_source">EmailAdminBroadcastNotificationSender.java</span></div><h1>EmailAdminBroadcastNotificationSender.java</h1><pre class="source lang-java linenums">package Service.Email;
+
+import DTO.UserDTO.UserContactDTO;
+import Service.BroadcastMessage.AdminBroadcastMessageData;
+import Service.NotificationSender.INotificationSender;
+import Util.MessageFormater.IMessageFormater;
+import org.springframework.stereotype.Component;
+
+/**
+ * Sends admin broadcast messages via email.
+ */
+@Component
+public class EmailAdminBroadcastNotificationSender implements INotificationSender&lt;UserContactDTO, String&gt;
+{
+
+    private final EmailService emailService;
+    private final IMessageFormater&lt;AdminBroadcastMessageData&gt; messageFormater;
+
+    /**
+     * Creates a new email broadcast sender.
+     *
+     * @param emailService
+     *            email sending service
+     * @param messageFormater
+     *            formatter for broadcast messages
+     */
+    public EmailAdminBroadcastNotificationSender(EmailService emailService,
+            IMessageFormater&lt;AdminBroadcastMessageData&gt; messageFormater)
+<span class="fc" id="L29">    {</span>
+<span class="fc" id="L30">        this.emailService = emailService;</span>
+<span class="fc" id="L31">        this.messageFormater = messageFormater;</span>
+<span class="fc" id="L32">    }</span>
+
+    /**
+     * Sends a formatted broadcast email to the specified user.
+     *
+     * @param user
+     *            target user contact info
+     * @param message
+     *            message content to send
+     * @see EmailService
+     */
+    @Override
+    public void send(UserContactDTO user,String message)
+    {
+<span class="pc bpc" id="L46" title="1 of 6 branches missed.">        if (user == null || user.getEmail() == null || user.getEmail().isBlank())</span>
+        {
+<span class="fc" id="L48">            return;</span>
+        }
+
+<span class="fc" id="L51">        AdminBroadcastMessageData data = new AdminBroadcastMessageData(user, message);</span>
+<span class="fc" id="L52">        String htmlBody = messageFormater.formatMessage(data);</span>
+<span class="fc" id="L53">        String subject = &quot;Admin Message from Library Management System&quot;;</span>
+
+<span class="fc" id="L55">        emailService.sendEmail(user.getEmail(),subject,htmlBody);</span>
+<span class="fc" id="L56">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

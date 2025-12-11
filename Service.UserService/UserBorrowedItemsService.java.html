@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserBorrowedItemsService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library-Management-System</a> &gt; <a href="index.source.html" class="el_package">Service.UserService</a> &gt; <span class="el_source">UserBorrowedItemsService.java</span></div><h1>UserBorrowedItemsService.java</h1><pre class="source lang-java linenums">package Service.UserService;
+
+import Entity.MediaItem;
+import Entity.User;
+import Util.CurrentLocalTimeDateResolver.ICurrentLocalTimeDateResolver;
+import lombok.NonNull;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Stream;
+
+/**
+ * Service for managing and analyzing a user's borrowed media items.
+ */
+@Service
+<span class="fc" id="L16">public class UserBorrowedItemsService</span>
+{
+
+    /**
+     * Counts the total number of borrowed items by a user.
+     *
+     * @param user
+     *            the user to check
+     * @return number of borrowed items
+     */
+<span class="fc bfc" id="L26" title="All 2 branches covered.">    public int countBorrowedItems(@NonNull User user)</span>
+    {
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if (user.getBorrowedItems() == null)</span>
+        {
+<span class="fc" id="L30">            return 0;</span>
+        }
+<span class="fc" id="L32">        return user.getBorrowedItems().size();</span>
+    }
+
+    /**
+     * Counts the number of overdue borrowed items for a user.
+     *
+     * @param user
+     *            the user to check
+     * @param timeDateResolver
+     *            provides the current local date and time
+     * @return number of overdue items
+     */
+<span class="fc bfc" id="L44" title="All 2 branches covered.">    public long countOverdueItems(@NonNull User user,ICurrentLocalTimeDateResolver timeDateResolver)</span>
+    {
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (user.getBorrowedItems() == null)</span>
+        {
+<span class="fc" id="L48">            return 0;</span>
+        }
+<span class="fc" id="L50">        var currentLocalDateTime = timeDateResolver.getCurrentLocalDateTime();</span>
+<span class="fc" id="L51">        return user.getBorrowedItems().stream()</span>
+<span class="fc bfc" id="L52" title="All 4 branches covered.">                .filter(mi -&gt; mi.isBorrowed() &amp;&amp; mi.getDueDate().isBefore(currentLocalDateTime)).count();</span>
+    }
+
+    /**
+     * Gets a stream of the user's overdue borrowed items.
+     *
+     * @param user
+     *            the user to check
+     * @param timeDateResolver
+     *            provides the current local date and time
+     * @return stream of overdue media items, or {@code null} if none
+     */
+<span class="fc bfc" id="L64" title="All 2 branches covered.">    public Stream&lt;MediaItem&gt; getOverdueItems(@NonNull User user,ICurrentLocalTimeDateResolver timeDateResolver)</span>
+    {
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        if (user.getBorrowedItems() == null)</span>
+        {
+<span class="fc" id="L68">            return null;</span>
+        }
+<span class="fc" id="L70">        var currentLocalDateTime = timeDateResolver.getCurrentLocalDateTime();</span>
+<span class="fc" id="L71">        return user.getBorrowedItems().stream()</span>
+<span class="fc bfc" id="L72" title="All 4 branches covered.">                .filter(mi -&gt; mi.isBorrowed() &amp;&amp; mi.getDueDate().isBefore(currentLocalDateTime));</span>
+    }
+
+    /**
+     * Gets all borrowed items of a user.
+     *
+     * @param user
+     *            the user whose items are retrieved
+     * @return list of borrowed media items
+     */
+<span class="fc bfc" id="L82" title="All 2 branches covered.">    public List&lt;MediaItem&gt; getBorrowedItems(@NonNull User user)</span>
+    {
+<span class="fc" id="L84">        return user.getBorrowedItems();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

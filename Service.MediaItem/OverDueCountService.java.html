@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OverDueCountService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library-Management-System</a> &gt; <a href="index.source.html" class="el_package">Service.MediaItem</a> &gt; <span class="el_source">OverDueCountService.java</span></div><h1>OverDueCountService.java</h1><pre class="source lang-java linenums">package Service.MediaItem;
+
+import java.time.LocalDateTime;
+import Repository.MediaItemRepository;
+import Util.CurrentLocalTimeDateResolver.CurrentLocalDateTimeResolver;
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+
+/**
+ * Service for counting overdue borrowed media items.
+ */
+@Service
+public class OverDueCountService
+{
+
+    private final MediaItemRepository mediaItemRepository;
+
+    /**
+     * Creates a new service using the given repository.
+     *
+     * @param mediaItemRepository
+     *            repository for media items
+     */
+    @Autowired
+    public OverDueCountService(MediaItemRepository mediaItemRepository)
+<span class="fc" id="L26">    {</span>
+<span class="fc" id="L27">        this.mediaItemRepository = mediaItemRepository;</span>
+<span class="fc" id="L28">    }</span>
+
+    /**
+     * Counts all overdue items based on the current system time.
+     *
+     * @return number of overdue items
+     */
+    public long countOverdueItems()
+    {
+<span class="fc" id="L37">        var now = new CurrentLocalDateTimeResolver().getCurrentLocalDateTime();</span>
+<span class="fc" id="L38">        return mediaItemRepository.countByBorrowedTrueAndDueDateBefore(now);</span>
+    }
+
+    /**
+     * Counts overdue items using a specific date and time.
+     *
+     * @param localDateTime
+     *            reference time for checking overdue items
+     * @return number of overdue items before the given time
+     */
+    public long countOverdueItems(LocalDateTime localDateTime)
+    {
+<span class="fc" id="L50">        return mediaItemRepository.countByBorrowedTrueAndDueDateBefore(localDateTime);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

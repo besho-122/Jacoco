@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmailPaymentConfirmationSender.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library-Management-System</a> &gt; <a href="index.source.html" class="el_package">Service.Email</a> &gt; <span class="el_source">EmailPaymentConfirmationSender.java</span></div><h1>EmailPaymentConfirmationSender.java</h1><pre class="source lang-java linenums">package Service.Email;
+
+import DTO.UserDTO.UserContactDTO;
+import Service.Payment.PaymentConfirmationData;
+import Service.NotificationSender.INotificationSender;
+import Util.MessageFormater.IMessageFormater;
+
+/**
+ * Sends payment confirmation emails to users.
+ */
+public class EmailPaymentConfirmationSender implements INotificationSender&lt;UserContactDTO, PaymentConfirmationData&gt;
+{
+
+    private final EmailService emailService;
+    private final IMessageFormater&lt;PaymentConfirmationData&gt; messageFormater;
+
+    /**
+     * Creates a new payment confirmation email sender.
+     *
+     * @param emailService
+     *            email sending service
+     * @param messageFormater
+     *            formatter for confirmation messages
+     */
+    public EmailPaymentConfirmationSender(EmailService emailService,
+            IMessageFormater&lt;PaymentConfirmationData&gt; messageFormater)
+<span class="fc" id="L27">    {</span>
+<span class="fc" id="L28">        this.emailService = emailService;</span>
+<span class="fc" id="L29">        this.messageFormater = messageFormater;</span>
+<span class="fc" id="L30">    }</span>
+
+    /**
+     * Sends a formatted payment confirmation email to the given user.
+     *
+     * @param user
+     *            user contact information
+     * @param data
+     *            payment confirmation details
+     * @see EmailService
+     */
+    @Override
+    public void send(UserContactDTO user,PaymentConfirmationData data)
+    {
+<span class="fc bfc" id="L44" title="All 6 branches covered.">        if (user == null || user.getEmail() == null || user.getEmail().isBlank())</span>
+        {
+<span class="fc" id="L46">            return;</span>
+        }
+
+<span class="fc" id="L49">        String htmlBody = messageFormater.formatMessage(data);</span>
+<span class="fc" id="L50">        String subject = &quot;Library Management System · Payment confirmation&quot;;</span>
+<span class="fc" id="L51">        emailService.sendEmail(user.getEmail(),subject,htmlBody);</span>
+<span class="fc" id="L52">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

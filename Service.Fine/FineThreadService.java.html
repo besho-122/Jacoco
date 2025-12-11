@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FineThreadService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library-Management-System</a> &gt; <a href="index.source.html" class="el_package">Service.Fine</a> &gt; <span class="el_source">FineThreadService.java</span></div><h1>FineThreadService.java</h1><pre class="source lang-java linenums">package Service.Fine;
+
+import Entity.User;
+import Repository.MediaItemRepository;
+import Repository.UserRepository;
+import Service.OverdueBorrowDetection.OverdueItemDetector;
+import Util.CurrentLocalTimeDateResolver.CurrentLocalDateTimeResolver;
+import jakarta.transaction.Transactional;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+
+/**
+ * Scheduled background service that periodically calculates and applies overdue
+ * fines.
+ * &lt;p&gt;
+ * Runs automatically once every 24 hours.
+ * &lt;/p&gt;
+ */
+@Component
+public class FineThreadService implements Runnable
+{
+
+    private final MediaItemRepository mediaItemRepository;
+    private final UserRepository userRepository;
+
+    /**
+     * Constructs a fine thread service with required repositories.
+     *
+     * @param mediaItemRepository
+     *            repository for media items
+     * @param userRepository
+     *            repository for user data
+     */
+    public FineThreadService(MediaItemRepository mediaItemRepository, UserRepository userRepository)
+<span class="nc" id="L37">    {</span>
+<span class="nc" id="L38">        this.mediaItemRepository = mediaItemRepository;</span>
+<span class="nc" id="L39">        this.userRepository = userRepository;</span>
+<span class="nc" id="L40">    }</span>
+
+    /**
+     * Executes the fine calculation process.
+     * &lt;p&gt;
+     * Scheduled to run every 24 hours to detect overdue items and apply fines
+     * accordingly.
+     * &lt;/p&gt;
+     */
+    @Override
+    @Scheduled(fixedRate = 24 * 60 * 60 * 1000)
+    public void run()
+    {
+<span class="nc" id="L53">        var service = new CalculateFineService(mediaItemRepository, userRepository);</span>
+<span class="nc" id="L54">        var currentDateTimeResolver = new CurrentLocalDateTimeResolver();</span>
+<span class="nc" id="L55">        service.calculateFines(currentDateTimeResolver.getCurrentLocalDateTime());</span>
+<span class="nc" id="L56">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
