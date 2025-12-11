@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GeneralOverdueBorrowMessageFormater.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library-Management-System</a> &gt; <a href="index.source.html" class="el_package">Util.MessageFormater</a> &gt; <span class="el_source">GeneralOverdueBorrowMessageFormater.java</span></div><h1>GeneralOverdueBorrowMessageFormater.java</h1><pre class="source lang-java linenums">package Util.MessageFormater;
+
+import Entity.MediaItem;
+import Service.OverdueBorrowDetection.OverdueBorrowedItem;
+import Service.OverdueBorrowDetection.OverdueBorrowedItemsData;
+import org.springframework.stereotype.Component;
+
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Locale;
+
+@Component
+<span class="fc" id="L16">public class GeneralOverdueBorrowMessageFormater implements IMessageFormater&lt;OverdueBorrowedItemsData&gt;</span>
+{
+
+<span class="fc" id="L19">    private final SimpleDateFormat borrowedDateFormat = new SimpleDateFormat(&quot;dd MMM yyyy&quot;, Locale.ENGLISH);</span>
+
+    @Override
+    public String formatMessage(OverdueBorrowedItemsData overdueBorrowedItemsData)
+    {
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if (overdueBorrowedItemsData == null)</span>
+        {
+<span class="fc" id="L26">            return &quot;&quot;;</span>
+        }
+
+<span class="fc" id="L29">        var user = overdueBorrowedItemsData.user();</span>
+<span class="fc" id="L30">        List&lt;OverdueBorrowedItem&gt; items = overdueBorrowedItemsData.items();</span>
+
+<span class="pc bpc" id="L32" title="2 of 6 branches missed.">        String userName = (user != null &amp;&amp; user.getName() != null &amp;&amp; !user.getName().isBlank())</span>
+<span class="fc" id="L33">                ? user.getName()</span>
+<span class="fc" id="L34">                : &quot;Valued Reader&quot;;</span>
+
+<span class="pc bpc" id="L36" title="1 of 2 branches missed.">        int overdueCount = (items == null) ? 0 : items.size();</span>
+<span class="fc" id="L37">        StringBuilder rowsBuilder = new StringBuilder();</span>
+
+<span class="pc bpc" id="L39" title="1 of 4 branches missed.">        if (items != null &amp;&amp; !items.isEmpty())</span>
+        {
+<span class="fc bfc" id="L41" title="All 2 branches covered.">            for (OverdueBorrowedItem overdueItem : items)</span>
+            {
+<span class="pc bpc" id="L43" title="1 of 2 branches missed.">                if (overdueItem == null)</span>
+                {
+<span class="nc" id="L45">                    continue;</span>
+                }
+
+<span class="fc" id="L48">                MediaItem item = overdueItem.item();</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">                String title = (item != null) ? nullSafe(item.getTitle()) : &quot;Unknown item&quot;;</span>
+<span class="fc" id="L50">                String borrowedDateStr = &quot;-&quot;;</span>
+
+<span class="pc bpc" id="L52" title="1 of 4 branches missed.">                if (item != null &amp;&amp; item.getBorrowedDate() != null)</span>
+                {
+<span class="nc" id="L54">                    borrowedDateStr = formatBorrowedDate(item.getBorrowedDate());</span>
+                }
+
+<span class="fc bfc" id="L57" title="All 2 branches covered.">                String detectedAtStr = (overdueItem.detectedAt() != null) ? overdueItem.detectedAt().toString() : &quot;-&quot;;</span>
+
+<span class="fc" id="L59">                long overdueDays = overdueItem.overdueDays();</span>
+
+<span class="fc" id="L61">                rowsBuilder.append(&quot;&quot;&quot;</span>
+                        &lt;tr class=&quot;item-row&quot;&gt;
+<span class="fc" id="L63">                            &lt;td class=&quot;item-title&quot;&gt;&lt;div class=&quot;item-main-title&quot;&gt;&quot;&quot;&quot;).append(escapeHtml(title))</span>
+<span class="fc" id="L64">                        .append(&quot;&lt;/div&gt;&lt;/td&gt;&quot;).append(&quot;&lt;td class=\&quot;item-date\&quot;&gt;&quot;).append(escapeHtml(borrowedDateStr))</span>
+<span class="fc" id="L65">                        .append(&quot;&lt;/td&gt;&quot;).append(&quot;&lt;td class=\&quot;item-overdue\&quot;&gt;&quot;).append(overdueDays).append(&quot; days&lt;/td&gt;&quot;)</span>
+<span class="fc" id="L66">                        .append(&quot;&lt;td class=\&quot;item-detected\&quot;&gt;&quot;).append(escapeHtml(detectedAtStr)).append(&quot;&lt;/td&gt;&quot;)</span>
+<span class="fc" id="L67">                        .append(&quot;&lt;/tr&gt;&quot;);</span>
+<span class="fc" id="L68">            }</span>
+        } else
+        {
+<span class="fc" id="L71">            rowsBuilder.append(&quot;&quot;&quot;</span>
+                    &lt;tr class=&quot;item-row empty-row&quot;&gt;
+                        &lt;td colspan=&quot;4&quot; class=&quot;empty-text&quot;&gt;
+                            You currently have no overdue items.
+                        &lt;/td&gt;
+                    &lt;/tr&gt;
+                    &quot;&quot;&quot;);
+        }
+
+<span class="fc" id="L80">        String htmlTemplate = &quot;&quot;&quot;</span>
+                &lt;!DOCTYPE html&gt;
+                &lt;html lang=&quot;en&quot;&gt;
+                &lt;head&gt;
+                    &lt;meta charset=&quot;UTF-8&quot;&gt;
+                    &lt;title&gt;MOBO Library · Overdue Items Notice&lt;/title&gt;
+                    &lt;style&gt;
+                        :root {
+                            --bg: #020617;
+                            --card-bg: #020617;
+                            --accent: #38bdf8;
+                            --text-main: #e5e7eb;
+                            --text-muted: #9ca3af;
+                            --danger: #f97373;
+                            --border-subtle: rgba(148, 163, 184, 0.35);
+                        }
+                        body {
+                            margin: 0;
+                            padding: 32px 12px;
+                            font-family: &quot;Segoe UI&quot;, system-ui, sans-serif;
+                            background: radial-gradient(circle at top, #0b1120 0, #020617 52%);
+                            color: var(--text-main);
+                        }
+                        .wrapper { max-width: 640px; margin: 0 auto; }
+                        .card {
+                            border: 1px solid var(--border-subtle);
+                            border-radius: 28px;
+                            padding: 28px 24px;
+                            background: var(--card-bg);
+                        }
+                        .badge {
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 8px;
+                            margin-bottom: 16px;
+                        }
+                        .badge-logo {
+                            height: 26px;
+                            width: 26px;
+                            border-radius: 50%;
+                            background: radial-gradient(circle at 20% 20%, #e0f2fe, transparent 55%),
+                                        radial-gradient(circle at 80% 80%, #38bdf8, transparent 55%);
+                            font-weight: 800;
+                            font-size: 14px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: #020617;
+                        }
+                        .items-table { width: 100%; border-collapse: collapse; }
+                        .items-table th, .items-table td {
+                            padding: 8px 16px;
+                            border-bottom: 1px solid rgba(31,41,55,0.9);
+                        }
+                        .item-overdue { color: var(--danger); font-weight: 600; }
+                    &lt;/style&gt;
+                &lt;/head&gt;
+                &lt;body&gt;
+                    &lt;div class=&quot;wrapper&quot;&gt;
+                        &lt;div class=&quot;card&quot;&gt;
+                            &lt;div class=&quot;badge&quot;&gt;
+                                &lt;div class=&quot;badge-logo&quot;&gt;MO&lt;/div&gt;
+                                &lt;div class=&quot;badge-text&quot;&gt;MOBO LIBRARY · OVERDUE ALERT&lt;/div&gt;
+                            &lt;/div&gt;
+                            &lt;p&gt;Hello &lt;strong&gt;__USER_NAME__&lt;/strong&gt;,&lt;/p&gt;
+                            &lt;p&gt;Our system has detected &lt;strong&gt;__OVERDUE_COUNT__ overdue item(s)&lt;/strong&gt; that need your attention.&lt;/p&gt;
+                            &lt;table class=&quot;items-table&quot;&gt;
+                                &lt;thead&gt;
+                                    &lt;tr&gt;&lt;th&gt;Title&lt;/th&gt;&lt;th&gt;Borrowed at&lt;/th&gt;&lt;th&gt;Overdue&lt;/th&gt;&lt;th&gt;Detected at&lt;/th&gt;&lt;/tr&gt;
+                                &lt;/thead&gt;
+                                &lt;tbody&gt;__ITEM_ROWS__&lt;/tbody&gt;
+                            &lt;/table&gt;
+                            &lt;p style=&quot;font-size:11px;color:#9ca3af;margin-top:20px;&quot;&gt;
+                                MOBO Library · Automated Overdue Notification System
+                            &lt;/p&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/body&gt;
+                &lt;/html&gt;
+                &quot;&quot;&quot;;
+
+<span class="fc" id="L161">        return htmlTemplate.replace(&quot;__USER_NAME__&quot;,escapeHtml(userName))</span>
+<span class="fc" id="L162">                .replace(&quot;__OVERDUE_COUNT__&quot;,String.valueOf(overdueCount))</span>
+<span class="fc" id="L163">                .replace(&quot;__ITEM_ROWS__&quot;,rowsBuilder.toString());</span>
+    }
+
+    private String formatBorrowedDate(Object rawDate)
+    {
+<span class="nc bnc" id="L168" title="All 2 branches missed.">        if (rawDate == null)</span>
+        {
+<span class="nc" id="L170">            return &quot;-&quot;;</span>
+        }
+
+<span class="nc bnc" id="L173" title="All 2 branches missed.">        if (rawDate instanceof java.util.Date date)</span>
+        {
+<span class="nc" id="L175">            return borrowedDateFormat.format(date);</span>
+        }
+
+<span class="nc bnc" id="L178" title="All 2 branches missed.">        if (rawDate instanceof LocalDate localDate)</span>
+        {
+<span class="nc" id="L180">            return localDate.format(DateTimeFormatter.ofPattern(&quot;dd MMM yyyy&quot;,Locale.ENGLISH));</span>
+        }
+
+<span class="nc bnc" id="L183" title="All 2 branches missed.">        if (rawDate instanceof LocalDateTime localDateTime)</span>
+        {
+<span class="nc" id="L185">            return localDateTime.toLocalDate().format(DateTimeFormatter.ofPattern(&quot;dd MMM yyyy&quot;,Locale.ENGLISH));</span>
+        }
+
+<span class="nc" id="L188">        return rawDate.toString();</span>
+    }
+
+    private static String nullSafe(String value)
+    {
+<span class="fc bfc" id="L193" title="All 4 branches covered.">        return value == null || value.isBlank() ? &quot;-&quot; : value;</span>
+    }
+
+    private static String escapeHtml(String input)
+    {
+<span class="pc bpc" id="L198" title="1 of 2 branches missed.">        if (input == null)</span>
+        {
+<span class="nc" id="L200">            return &quot;&quot;;</span>
+        }
+<span class="fc" id="L202">        return input.replace(&quot;&amp;&quot;,&quot;&amp;amp;&quot;).replace(&quot;&lt;&quot;,&quot;&amp;lt;&quot;).replace(&quot;&gt;&quot;,&quot;&amp;gt;&quot;).replace(&quot;\&quot;&quot;,&quot;&amp;quot;&quot;);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

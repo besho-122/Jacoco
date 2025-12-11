@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SpringFXMLLoader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library-Management-System</a> &gt; <a href="index.source.html" class="el_package">Util</a> &gt; <span class="el_source">SpringFXMLLoader.java</span></div><h1>SpringFXMLLoader.java</h1><pre class="source lang-java linenums">package Util;
+
+import javafx.fxml.FXMLLoader;
+import org.springframework.context.ApplicationContext;
+
+import java.net.URL;
+
+/**
+ * Utility class that integrates Spring's {@link ApplicationContext} with
+ * JavaFX's {@link FXMLLoader}.
+ * &lt;p&gt;
+ * This allows Spring to manage controller instances declared in FXML files,
+ * enabling dependency injection in JavaFX applications.
+ */
+public final class SpringFXMLLoader
+{
+
+<span class="fc" id="L18">    private static final ApplicationContext applicationContext = ApplicationContextProvider.getApplicationContext();</span>
+
+    private SpringFXMLLoader()
+    {
+    }
+
+    /**
+     * Creates and configures a {@link FXMLLoader} for the given FXML file path.
+     *
+     * @param fxmlPath
+     *            the classpath-relative path to the FXML file (e.g.
+     *            &quot;/fxml/login.fxml&quot;)
+     * @return a configured {@link FXMLLoader} instance ready to load
+     * @throws IllegalArgumentException
+     *             if the FXML resource cannot be found
+     */
+    public static FXMLLoader load(String fxmlPath)
+    {
+<span class="nc" id="L36">        URL resource = SpringFXMLLoader.class.getResource(fxmlPath);</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">        if (resource == null)</span>
+        {
+<span class="nc" id="L39">            throw new IllegalArgumentException(&quot;FXML file not found at path: &quot; + fxmlPath);</span>
+        }
+
+<span class="nc" id="L42">        FXMLLoader loader = new FXMLLoader(resource);</span>
+<span class="nc" id="L43">        loader.setControllerFactory(applicationContext::getBean);</span>
+<span class="nc" id="L44">        return loader;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

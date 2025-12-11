@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AdminBroadcastMessageFormater.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library-Management-System</a> &gt; <a href="index.source.html" class="el_package">Util.MessageFormater</a> &gt; <span class="el_source">AdminBroadcastMessageFormater.java</span></div><h1>AdminBroadcastMessageFormater.java</h1><pre class="source lang-java linenums">package Util.MessageFormater;
+
+import DTO.UserDTO.UserContactDTO;
+import Service.BroadcastMessage.AdminBroadcastMessageData;
+import org.springframework.stereotype.Component;
+
+/**
+ * Formats HTML email messages for admin broadcasts sent to users.
+ * &lt;p&gt;
+ * This formatter generates a styled email template that includes the admin’s
+ * message and the recipient’s name.
+ */
+@Component
+<span class="fc" id="L14">public class AdminBroadcastMessageFormater implements IMessageFormater&lt;AdminBroadcastMessageData&gt;</span>
+{
+
+    /**
+     * Builds an HTML-formatted admin broadcast message.
+     *
+     * @param data
+     *            the message data containing the recipient and message text
+     * @return a complete HTML string ready for sending by email
+     */
+    @Override
+    public String formatMessage(AdminBroadcastMessageData data)
+    {
+<span class="fc bfc" id="L27" title="All 4 branches covered.">        if (data == null || data.userContactDTO() == null)</span>
+        {
+<span class="fc" id="L29">            return &quot;&quot;;</span>
+        }
+
+<span class="fc" id="L32">        UserContactDTO user = data.userContactDTO();</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        String message = data.message() == null ? &quot;&quot; : data.message();</span>
+<span class="pc bpc" id="L34" title="1 of 4 branches missed.">        String userName = (user.getName() != null &amp;&amp; !user.getName().isBlank()) ? user.getName() : &quot;Valued Reader&quot;;</span>
+
+<span class="fc" id="L36">        String escapedMessage = escapeHtml(message).replace(&quot;\n&quot;,&quot;&lt;br/&gt;&quot;);</span>
+
+<span class="fc" id="L38">        String htmlTemplate = &quot;&quot;&quot;</span>
+                &lt;!DOCTYPE html&gt;
+                &lt;html lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;
+                &lt;head&gt;
+                    &lt;meta charset=&quot;UTF-8&quot;&gt;
+                    &lt;title&gt;Library Management System · Admin Message&lt;/title&gt;
+                    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+                    &lt;style&gt;
+                        /* simplified Tailwind-like theme */
+                        :root {
+                            --bg: #020617;
+                            --card-bg: #020617;
+                            --accent: #38bdf8;
+                            --text-main: #eeeeee;
+                            --border-subtle: rgba(148, 163, 184, 0.35);
+                        }
+                        body {
+                            margin: 0;
+                            padding: 32px 12px;
+                            font-family: &quot;Segoe UI&quot;, system-ui, sans-serif;
+                            background: radial-gradient(circle at top, #0b1120 0, #020617 52%);
+                            color: var(--text-main);
+                        }
+                        .wrapper { max-width: 640px; margin: 0 auto; }
+                        .card {
+                            background: var(--card-bg);
+                            border: 1px solid var(--border-subtle);
+                            border-radius: 28px;
+                            padding: 28px 24px;
+                        }
+                        .badge {
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 8px;
+                            margin-bottom: 16px;
+                        }
+                        .badge-logo {
+                            height: 26px; width: 26px;
+                            border-radius: 50%;
+                            background: radial-gradient(circle at 20% 20%, #e0f2fe, transparent 55%),
+                                        radial-gradient(circle at 80% 80%, #38bdf8, transparent 55%);
+                            font-weight: 800;
+                            font-size: 14px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: #020617;
+                        }
+                        .title { font-size: 22px; font-weight: 700; text-transform: uppercase; }
+                        .message-box {
+                            margin-top: 10px;
+                            padding: 14px 16px;
+                            border-radius: 18px;
+                            border: 1px solid var(--border-subtle);
+                            background: rgba(15, 23, 42, 0.9);
+                        }
+                    &lt;/style&gt;
+                &lt;/head&gt;
+                &lt;body&gt;
+                    &lt;div class=&quot;wrapper&quot;&gt;
+                        &lt;div class=&quot;card&quot;&gt;
+                            &lt;div class=&quot;badge&quot;&gt;
+                                &lt;div class=&quot;badge-logo&quot;&gt;MO&lt;/div&gt;
+                                &lt;div class=&quot;badge-text&quot;&gt;MOBO LIBRARY · ADMIN&lt;/div&gt;
+                            &lt;/div&gt;
+                            &lt;div class=&quot;title&quot;&gt;Admin message&lt;/div&gt;
+                            &lt;p&gt;Hello &lt;strong&gt;__USER_NAME__&lt;/strong&gt;,&lt;/p&gt;
+                            &lt;div class=&quot;message-box&quot;&gt;__MESSAGE_BODY__&lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/body&gt;
+                &lt;/html&gt;
+                &quot;&quot;&quot;;
+
+<span class="fc" id="L112">        return htmlTemplate.replace(&quot;__USER_NAME__&quot;,escapeHtml(userName)).replace(&quot;__MESSAGE_BODY__&quot;,escapedMessage);</span>
+    }
+
+    /**
+     * Escapes HTML special characters to prevent injection.
+     *
+     * @param input
+     *            the input string
+     * @return an escaped HTML-safe string
+     */
+    private static String escapeHtml(String input)
+    {
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">        if (input == null)</span>
+<span class="nc" id="L125">            return &quot;&quot;;</span>
+<span class="fc" id="L126">        return input.replace(&quot;&amp;&quot;,&quot;&amp;amp;&quot;).replace(&quot;&lt;&quot;,&quot;&amp;lt;&quot;).replace(&quot;&gt;&quot;,&quot;&amp;gt;&quot;).replace(&quot;\&quot;&quot;,&quot;&amp;quot;&quot;);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

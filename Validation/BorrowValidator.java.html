@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BorrowValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library-Management-System</a> &gt; <a href="index.source.html" class="el_package">Validation</a> &gt; <span class="el_source">BorrowValidator.java</span></div><h1>BorrowValidator.java</h1><pre class="source lang-java linenums">package Validation;
+
+import Entity.MediaItem;
+import Entity.User;
+import Validation.OverdueBorrowValidator.IOverdueBorrowValidation;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+
+/**
+ * Validates whether a user is eligible to borrow an item.
+ * &lt;p&gt;
+ * Checks overdue items, unpaid fines, and item availability.
+ */
+@Service
+public class BorrowValidator
+{
+
+    private final IOverdueBorrowValidation overdueBorrowValidation;
+
+    /**
+     * Creates a new {@code BorrowValidator}.
+     *
+     * @param overdueBorrowValidation
+     *            component used to validate overdue borrows
+     */
+    public BorrowValidator(IOverdueBorrowValidation overdueBorrowValidation)
+<span class="fc" id="L28">    {</span>
+<span class="fc" id="L29">        this.overdueBorrowValidation = overdueBorrowValidation;</span>
+<span class="fc" id="L30">    }</span>
+
+    /**
+     * Validates if a user can borrow the given item.
+     *
+     * @param user
+     *            the user attempting to borrow
+     * @param item
+     *            the media item to be borrowed
+     * @throws Exception
+     *             if item is already borrowed, user has fines, or overdue items
+     *             exist
+     * @see IOverdueBorrowValidation
+     */
+    public void validate(User user,MediaItem item) throws Exception
+    {
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (item.isBorrowed())</span>
+        {
+<span class="fc" id="L48">            throw new IllegalArgumentException(&quot;Item is already borrowed&quot;);</span>
+        }
+<span class="fc bfc" id="L50" title="All 4 branches covered.">        if (user.getFineBalance() != null &amp;&amp; user.getFineBalance().compareTo(BigDecimal.ZERO) &gt; 0)</span>
+        {
+<span class="fc" id="L52">            throw new IllegalStateException(&quot;fine: please pay full balance before borrowing.&quot;);</span>
+        }
+<span class="fc" id="L54">        overdueBorrowValidation.validate(user);</span>
+<span class="pc bpc" id="L55" title="1 of 4 branches missed.">        if (user.getFineBalance() != null &amp;&amp; user.getFineBalance().compareTo(BigDecimal.ZERO) &gt; 0)</span>
+        {
+<span class="nc" id="L57">            throw new IllegalStateException(&quot;fine: please pay full balance before borrowing.&quot;);</span>
+        }
+<span class="fc" id="L59">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FineResolver.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library-Management-System</a> &gt; <a href="index.source.html" class="el_package">Util</a> &gt; <span class="el_source">FineResolver.java</span></div><h1>FineResolver.java</h1><pre class="source lang-java linenums">package Util;
+
+import Entity.MediaItem;
+import Enum.MediaItemType;
+import java.math.BigDecimal;
+import Exception.NotImplementedException;
+
+/**
+ * Utility class for resolving fine amounts based on {@link MediaItem} type.
+ */
+public class FineResolver
+{
+
+    private FineResolver()
+    {
+    }
+
+    /**
+     * Returns the fine amount applicable to the given media item type.
+     *
+     * @param item
+     *            the media item for which to determine the fine
+     * @return the fine amount as a {@link BigDecimal}
+     * @throws NotImplementedException
+     *             if the item's media type is unsupported
+     */
+    public static BigDecimal getFine(MediaItem item)
+    {
+<span class="pc bpc" id="L29" title="1 of 4 branches missed.">        if (item == null || item.getMediaType() == null)</span>
+        {
+<span class="fc" id="L31">            throw new IllegalArgumentException(&quot;Media item or type cannot be null.&quot;);</span>
+        }
+
+<span class="pc bpc" id="L34" title="1 of 3 branches missed.">        return switch (item.getMediaType()) {</span>
+<span class="fc" id="L35">            case Book -&gt; BigDecimal.valueOf(20);</span>
+<span class="fc" id="L36">            case Cd -&gt; BigDecimal.valueOf(10);</span>
+<span class="nc" id="L37">            default -&gt; throw new NotImplementedException(&quot;Fine not implemented for media type: &quot; + item.getMediaType());</span>
+        };
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

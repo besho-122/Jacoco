@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AmountValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library-Management-System</a> &gt; <a href="index.source.html" class="el_package">Validation</a> &gt; <span class="el_source">AmountValidator.java</span></div><h1>AmountValidator.java</h1><pre class="source lang-java linenums">package Validation;
+
+import org.springframework.stereotype.Component;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.regex.Pattern;
+
+/**
+ * Utility validator for parsing and validating monetary amounts.
+ * &lt;p&gt;
+ * Ensures proper numeric format, decimal precision, and optional maximum
+ * limits.
+ */
+@Component
+<span class="fc" id="L15">public class AmountValidator</span>
+{
+<span class="fc" id="L17">    private static final Pattern AMOUNT_PATTERN = Pattern.compile(&quot;^\\d+(\\.\\d{1,2})?$&quot;);</span>
+    private static final int SCALE = 2;
+
+    /**
+     * Validates and parses a string amount, ensuring it follows numeric format and
+     * is within the allowed range.
+     *
+     * @param raw
+     *            the raw amount string to validate
+     * @param maxAllowed
+     *            optional maximum allowed value (nullable)
+     * @return parsed {@link BigDecimal} value with 2 decimal places
+     * @throws IllegalArgumentException
+     *             if format is invalid or exceeds max allowed
+     */
+    public BigDecimal validateAndParse(String raw,BigDecimal maxAllowed)
+    {
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (raw == null)</span>
+        {
+<span class="fc" id="L36">            throw new IllegalArgumentException(&quot;Amount is required.&quot;);</span>
+        }
+<span class="fc" id="L38">        String s = raw.trim();</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (s.isEmpty())</span>
+        {
+<span class="fc" id="L41">            throw new IllegalArgumentException(&quot;Amount is required.&quot;);</span>
+        }
+<span class="fc" id="L43">        s = s.replace(',','.');</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (!AMOUNT_PATTERN.matcher(s).matches())</span>
+        {
+<span class="fc" id="L46">            throw new IllegalArgumentException(&quot;Invalid amount format. Use digits with up to 2 decimals (e.g. 12.50).&quot;);</span>
+        }
+        BigDecimal amount;
+        try
+        {
+<span class="fc" id="L51">            amount = new BigDecimal(s).setScale(SCALE,RoundingMode.UNNECESSARY);</span>
+<span class="nc" id="L52">        } catch (ArithmeticException ae)</span>
+        {
+<span class="nc" id="L54">            throw new IllegalArgumentException(&quot;Amount must have at most 2 decimal places.&quot;);</span>
+<span class="nc" id="L55">        } catch (NumberFormatException nfe)</span>
+        {
+<span class="nc" id="L57">            throw new IllegalArgumentException(&quot;Invalid numeric amount.&quot;);</span>
+<span class="fc" id="L58">        }</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (amount.compareTo(BigDecimal.ZERO) &lt;= 0)</span>
+        {
+<span class="fc" id="L61">            throw new IllegalArgumentException(&quot;Amount must be greater than zero.&quot;);</span>
+        }
+
+<span class="fc bfc" id="L64" title="All 4 branches covered.">        if (maxAllowed != null &amp;&amp; amount.compareTo(maxAllowed) &gt; 0)</span>
+        {
+<span class="fc" id="L66">            throw new IllegalArgumentException(</span>
+<span class="fc" id="L67">                    &quot;Amount exceeds allowed maximum of &quot; + maxAllowed.setScale(SCALE,RoundingMode.HALF_UP));</span>
+        }
+
+<span class="fc" id="L70">        return amount;</span>
+    }
+
+    /**
+     * Validates and parses a raw string amount with no maximum limit.
+     *
+     * @param raw
+     *            the raw amount string
+     * @return parsed {@link BigDecimal} value
+     */
+    public BigDecimal validateAndParse(String raw)
+    {
+<span class="fc" id="L82">        return validateAndParse(raw,null);</span>
+    }
+
+    /**
+     * Checks if the given string matches a valid numeric amount format.
+     *
+     * @param raw
+     *            the string to check
+     * @return true if valid, false otherwise
+     */
+    public boolean isValidFormat(String raw)
+    {
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (raw == null)</span>
+<span class="fc" id="L95">            return false;</span>
+<span class="fc" id="L96">        String s = raw.trim().replace(',','.');</span>
+<span class="fc bfc" id="L97" title="All 4 branches covered.">        return !s.isEmpty() &amp;&amp; AMOUNT_PATTERN.matcher(s).matches();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
