@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserContactDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library-Management-System</a> &gt; <a href="index.source.html" class="el_package">DTO.UserDTO</a> &gt; <span class="el_source">UserContactDTO.java</span></div><h1>UserContactDTO.java</h1><pre class="source lang-java linenums">package DTO.UserDTO;
+
+import Entity.User;
+import lombok.*;
+
+/**
+ * Simple DTO for transferring basic user contact info (id, name, email).
+ */
+@Getter
+@Setter
+public class UserContactDTO
+{
+
+    private int id;
+    private String name;
+    private String email;
+
+    /**
+     * Default constructor.
+     */
+    public UserContactDTO()
+<span class="fc" id="L22">    {</span>
+<span class="fc" id="L23">    }</span>
+
+    /**
+     * Create DTO from a User entity.
+     *
+     * @param user
+     *            the user to map
+     */
+    public UserContactDTO(User user)
+<span class="nc" id="L32">    {</span>
+<span class="nc" id="L33">        this.id = user.getId();</span>
+<span class="nc" id="L34">        this.name = user.getName();</span>
+<span class="nc" id="L35">        this.email = user.getEmail();</span>
+<span class="nc" id="L36">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

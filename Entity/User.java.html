@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>User.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library-Management-System</a> &gt; <a href="index.source.html" class="el_package">Entity</a> &gt; <span class="el_source">User.java</span></div><h1>User.java</h1><pre class="source lang-java linenums">package Entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+import org.apache.commons.lang3.builder.*;
+import Enum.UserRole;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.*;
+
+/**
+ * Represents a library user with account, role, and fine details.
+ */
+@Getter
+@Setter
+@Entity
+@Table(name = &quot;users&quot;)
+@NoArgsConstructor
+public class User
+{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String hashedPassword;
+
+    @Column(columnDefinition = &quot;TIMESTAMP DEFAULT CURRENT_TIMESTAMP&quot;)
+    private LocalDateTime creationDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole userRole;
+
+<span class="fc" id="L43">    @Column(name = &quot;fine_balance&quot;, precision = 10, scale = 2, columnDefinition = &quot;DECIMAL(10,2) DEFAULT 0.00&quot;)</span>
+    private BigDecimal fineBalance = BigDecimal.ZERO;
+
+<span class="fc" id="L46">    @OneToMany(mappedBy = &quot;borrower&quot;, cascade = CascadeType.ALL, fetch = FetchType.EAGER)</span>
+    private List&lt;MediaItem&gt; borrowedItems = new ArrayList&lt;&gt;();
+
+<span class="fc" id="L49">    @OneToMany(mappedBy = &quot;user&quot;, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)</span>
+    private List&lt;FineHistory&gt; fineHistoryList = new ArrayList&lt;&gt;();
+
+    /**
+     * Increases the user's fine balance.
+     *
+     * @param amount
+     *            amount to add
+     */
+<span class="nc bnc" id="L58" title="All 2 branches missed.">    public void increaseFine(@NonNull BigDecimal amount)</span>
+    {
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        if (amount.compareTo(BigDecimal.ZERO) &lt;= 0)</span>
+<span class="nc" id="L61">            return;</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        if (fineBalance == null)</span>
+<span class="nc" id="L63">            fineBalance = BigDecimal.ZERO;</span>
+<span class="nc" id="L64">        fineBalance = fineBalance.add(amount);</span>
+<span class="nc" id="L65">    }</span>
+
+    /**
+     * Decreases the user's fine balance.
+     *
+     * @param amount
+     *            amount to subtract
+     */
+<span class="nc bnc" id="L73" title="All 2 branches missed.">    public void decreaseFine(@NonNull BigDecimal amount)</span>
+    {
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        if (amount.compareTo(BigDecimal.ZERO) &lt;= 0)</span>
+<span class="nc" id="L76">            return;</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (fineBalance == null)</span>
+<span class="nc" id="L78">            fineBalance = BigDecimal.ZERO;</span>
+
+<span class="nc" id="L80">        fineBalance = fineBalance.subtract(amount);</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (fineBalance.compareTo(BigDecimal.ZERO) &lt; 0)</span>
+<span class="nc" id="L82">            fineBalance = BigDecimal.ZERO;</span>
+<span class="nc" id="L83">    }</span>
+
+    /**
+     * Creates a new user with basic info.
+     *
+     * @param name
+     *            user's name
+     * @param email
+     *            user's email
+     * @param hashedPassword
+     *            hashed password
+     */
+    public User(String name, String email, String hashedPassword)
+<span class="fc" id="L96">    {</span>
+<span class="fc" id="L97">        this.name = name;</span>
+<span class="fc" id="L98">        this.email = email;</span>
+<span class="fc" id="L99">        this.hashedPassword = hashedPassword;</span>
+<span class="fc" id="L100">    }</span>
+
+    /**
+     * Returns a string representation of the user.
+     *
+     * @return user details as a string
+     */
+    @Override
+    public String toString()
+    {
+<span class="nc" id="L110">        return ToStringBuilder.reflectionToString(this,ToStringStyle.MULTI_LINE_STYLE);</span>
+    }
+
+    /**
+     * Sets the creation date when the user is first persisted.
+     */
+    @PrePersist
+    protected void onCreate()
+    {
+<span class="nc" id="L119">        creationDate = LocalDateTime.now();</span>
+<span class="nc" id="L120">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FineHistory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library-Management-System</a> &gt; <a href="index.source.html" class="el_package">Entity</a> &gt; <span class="el_source">FineHistory.java</span></div><h1>FineHistory.java</h1><pre class="source lang-java linenums">package Entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * Stores user fine history records.
+ */
+@Getter
+@Setter
+@Entity
+@Table(name = &quot;fine_history&quot;)
+@NoArgsConstructor
+public class FineHistory
+{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;user_id&quot;, nullable = false)
+    private User user;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal fineAmount;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = &quot;applied_date&quot;, nullable = false, columnDefinition = &quot;TIMESTAMP DEFAULT CURRENT_TIMESTAMP&quot;)
+    private Date appliedDate;
+
+    /**
+     * Creates a new fine record for a user.
+     *
+     * @param user
+     *            the fined user
+     * @param fineAmount
+     *            the fine amount
+     */
+    public FineHistory(User user, BigDecimal fineAmount)
+<span class="fc" id="L43">    {</span>
+<span class="fc" id="L44">        this.user = user;</span>
+<span class="fc" id="L45">        this.fineAmount = fineAmount;</span>
+<span class="fc" id="L46">        this.appliedDate = new Date();</span>
+<span class="fc" id="L47">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CdSearchService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library-Management-System</a> &gt; <a href="index.source.html" class="el_package">Service.CDService</a> &gt; <span class="el_source">CdSearchService.java</span></div><h1>CdSearchService.java</h1><pre class="source lang-java linenums">package Service.CDService;
+
+import lombok.NonNull;
+import Entity.Cd;
+import Repository.CdRepository;
+import Service.CDService.SearchStrategy.ICdSearchStrategy;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+/**
+ * Service that delegates CD search operations to the selected strategy.
+ */
+@Service
+public class CdSearchService
+{
+
+    private final CdRepository cdRepository;
+
+    /**
+     * Creates a new CD search service.
+     *
+     * @param cdRepository
+     *            repository used for CD queries
+     */
+<span class="fc bfc" id="L25" title="All 2 branches covered.">    public CdSearchService(@NonNull CdRepository cdRepository)</span>
+<span class="fc" id="L26">    {</span>
+<span class="fc" id="L27">        this.cdRepository = cdRepository;</span>
+<span class="fc" id="L28">    }</span>
+
+    /**
+     * Executes a search using the given strategy and value.
+     *
+     * @param strategy
+     *            search strategy (e.g., by title)
+     * @param value
+     *            search value
+     * @param &lt;TValue&gt;
+     *            type of the search value
+     * @return list of matching CDs
+     * @see Service.CDService.SearchStrategy.ICdSearchStrategy
+     */
+<span class="fc bfc" id="L42" title="All 4 branches covered.">    public &lt;TValue&gt; List&lt;Cd&gt; search(@NonNull ICdSearchStrategy&lt;TValue&gt; strategy,@NonNull TValue value)</span>
+    {
+<span class="fc" id="L44">        return strategy.searchCd(cdRepository,value);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

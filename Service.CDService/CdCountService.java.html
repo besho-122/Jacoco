@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CdCountService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library-Management-System</a> &gt; <a href="index.source.html" class="el_package">Service.CDService</a> &gt; <span class="el_source">CdCountService.java</span></div><h1>CdCountService.java</h1><pre class="source lang-java linenums">package Service.CDService;
+
+import Repository.CdRepository;
+import org.springframework.stereotype.Service;
+
+/**
+ * Service for counting CDs in the system.
+ */
+@Service
+public class CdCountService
+{
+
+    private final CdRepository cdRepository;
+
+    /**
+     * Creates a new CD count service.
+     *
+     * @param cdRepository
+     *            repository for CD data
+     */
+    public CdCountService(CdRepository cdRepository)
+<span class="fc" id="L22">    {</span>
+<span class="fc" id="L23">        this.cdRepository = cdRepository;</span>
+<span class="fc" id="L24">    }</span>
+
+    /**
+     * Counts the total number of CDs.
+     *
+     * @return total CD count
+     */
+    public long countCds()
+    {
+<span class="fc" id="L33">        return cdRepository.count();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BorrowService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library-Management-System</a> &gt; <a href="index.source.html" class="el_package">Service</a> &gt; <span class="el_source">BorrowService.java</span></div><h1>BorrowService.java</h1><pre class="source lang-java linenums">package Service;
+
+import Entity.MediaItem;
+import Entity.User;
+import Util.CurrentLocalTimeDateResolver.CurrentLocalDateTimeResolver;
+import Util.DateCalculator.DateCalculator;
+import Repository.UserRepository;
+import Validation.BorrowValidator;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+import lombok.NonNull;
+
+/**
+ * Handles the borrowing process for media items.
+ */
+@Service
+public class BorrowService
+{
+
+    private final UserRepository userRepository;
+    private final BorrowValidator borrowValidator;
+
+    /**
+     * Creates a new borrow service with the given dependencies.
+     *
+     * @param userRepository
+     *            repository for saving user data
+     * @param borrowValidator
+     *            validator for borrow rules
+     */
+    public BorrowService(UserRepository userRepository, BorrowValidator borrowValidator)
+<span class="fc" id="L32">    {</span>
+<span class="fc" id="L33">        this.userRepository = userRepository;</span>
+<span class="fc" id="L34">        this.borrowValidator = borrowValidator;</span>
+<span class="fc" id="L35">    }</span>
+
+    /**
+     * Allows a user to borrow a media item if validation passes.
+     *
+     * @param user
+     *            the user borrowing the item
+     * @param item
+     *            the item being borrowed
+     * @throws Exception
+     *             if the borrow validation fails
+     */
+    @Transactional
+<span class="fc bfc" id="L48" title="All 4 branches covered.">    public void borrow(@NonNull User user,@NonNull MediaItem item) throws Exception</span>
+    {
+<span class="fc" id="L50">        borrowValidator.validate(user,item);</span>
+<span class="fc" id="L51">        var currentDate = new CurrentLocalDateTimeResolver().getCurrentLocalDateTime();</span>
+<span class="fc" id="L52">        int allowedOverdueDays = BorrowDueDurationCalculator.getDuration(item);</span>
+<span class="fc" id="L53">        var dueDate = DateCalculator.add(currentDate,allowedOverdueDays);</span>
+
+<span class="fc" id="L55">        item.setBorrowed(true);</span>
+<span class="fc" id="L56">        item.setBorrowedDate(currentDate);</span>
+<span class="fc" id="L57">        item.setDueDate(dueDate);</span>
+<span class="fc" id="L58">        item.setBorrower(user);</span>
+<span class="fc" id="L59">        user.getBorrowedItems().add(item);</span>
+
+<span class="fc" id="L61">        userRepository.save(user);</span>
+<span class="fc" id="L62">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
